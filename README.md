@@ -12,9 +12,11 @@ En instituciones con salidas frecuentes de personal (hospitales, municipios, col
 - Luego va a RRHH a buscar otra firma
 - Luego presenta el papel en garita
 - El vigilante anota en un cuaderno
-- Al final del mes, RRHH cuenta papeles a mano para generar reportes
+- Al final del mes, RRHH cuenta cada ticket uno por uno y elabora el reporte en Excel
 
-**Resultado:** tiempo perdido, papeles extraviados, cero trazabilidad, reportes inexactos y empleados yendo de oficina en oficina preguntando si ya los aprobaron.
+**Resultado:** tiempo perdido, papeles extraviados, cero trazabilidad y reportes inexactos.
+
+**Impacto económico:** El personal de RRHH dedica aproximadamente 1 hora diaria contando tickets uno por uno y elaborando reportes en Excel (6 días a la semana × 4 semanas = 24 horas al mes). Con un sueldo de $400 USD/mes, se estiman aproximadamente $60 USD mensuales desperdiciados en tiempo administrativo no productivo.
 
 ---
 
@@ -28,7 +30,10 @@ GatePass digitaliza todo el flujo:
 4. RRHH aprueba → WhatsApp al empleado con confirmación final
 5. El vigilante marca la salida en garita
 6. El conductor confirma los pasajeros
-7. RRHH puede consultar reportes en cualquier momento por WhatsApp a la IA
+7. Ollama genera reportes automáticos diarios y semanales consolidados
+8. RRHH puede consultar reportes en cualquier momento por WhatsApp a la IA
+
+**Impacto:** Con reportes automáticos diarios y semanales generados por IA, la empresa ahorra aproximadamente $60 USD mensuales en tiempo administrativo no productivo.
 
 ---
 
