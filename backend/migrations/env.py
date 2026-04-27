@@ -1,0 +1,66 @@
+from logging.config import fileConfig
+from sqlalchemy import engine_from_config, pool
+from alembic import context
+
+# Lee la config de alembic.ini
+config = context.config
+
+# Configura logging
+if config.config_file_name is not None:
+    fileConfig(config.config_file_name)
+
+# --- IMPORTACIONES CLAVE ---
+# 1. Importa settings para obtener la DATABASE_URL real del .env
+from app.core.config import settings
+
+# 2. Importa Base con todos los modelos registrados
+#    Alembic necesita conocer todos los modelos para detectar cambios
+from app.models.models import Base
+
+# Sobreescribe la URL placeholder del alembic.ini con la del .env
+config.set_main_option("sqlalchemy.url", settings.DATABASE_URL)
+
+# Le dice a Alembic dónde están las tablas para autogenerar migraciones
+target_metadata = Base.metadata
+
+
+def run_migrations_offline() -> None:
+    """
+    Modo offline: genera el SQL sin conectarse a la DB.
+    Útil para revisar qué SQL se va a ejecutar antes de aplicarlo.
+    """
+    url = config.get_main_option("sqlalchemy.url")
+    context.configure(
+        url=url,
+        target_metadata=target_metadata,
+        literal_binds=True,
+        dialect_opts={"paramstyle": "named"},
+    )
+    with context.begin_transaction():
+        context.run_migrations()
+
+
+def run_migrations_online() -> None:
+    """
+    Modo online: se conecta a la DB y aplica las migraciones directamente.
+    Es el modo que usarás normalmente con: alembic upgrade head
+    """
+    connectable = engine_from_config(
+        config.get_section(config.config_ini_section, {}),
+        prefix="sqlalchemy.",
+        poolclass=pool.NullPool,
+    )
+    with connectable.connect() as connection:
+        context.configure(
+            connection=connection,
+            target_metadata=target_metadata,
+        )
+        with context.begin_transaction():
+            context.run_migrations()
+
+
+# Decide qué modo usar
+if context.is_offline_mode():
+    run_migrations_offline()
+else:
+    run_migrations_online()
