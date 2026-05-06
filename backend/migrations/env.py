@@ -58,7 +58,6 @@ def run_migrations_online() -> None:
         with context.begin_transaction():
             context.run_migrations()
 
-
 # Decide qué modo usar
 if context.is_offline_mode():
     run_migrations_offline()

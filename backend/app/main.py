@@ -2,20 +2,17 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from app.core.database import SessionLocal
 from app.core.seeder import run_all_seeders
+from app.api.v1 import auth, usuarios
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # --- AL ARRANCAR ---
     db = SessionLocal()
     try:
         run_all_seeders(db)
     finally:
         db.close()
-
-    yield  # la app corre aquí
-
-    # --- AL APAGAR --- (opcional, para cleanup futuro)
+    yield
 
 
 app = FastAPI(
@@ -24,6 +21,9 @@ app = FastAPI(
     version="1.0.0",
     lifespan=lifespan,
 )
+# ROUTERS
+app.include_router(auth.router,     prefix="/api/v1")
+app.include_router(usuarios.router, prefix="/api/v1")
 
 
 @app.get("/")
