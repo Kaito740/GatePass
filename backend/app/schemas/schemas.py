@@ -14,6 +14,9 @@ class RolResponse(BaseModel):
 class AreaCreate(BaseModel):
     nombre: str
 
+class AreaUpdate(BaseModel):
+    nombre: str
+
 class AreaResponse(BaseModel):
     id    : int
     nombre: str
@@ -55,10 +58,10 @@ class UsuarioResponse(BaseModel):
     model_config = {"from_attributes": True}
 
 
-# USUARIO
+# CUENTA ADMIN
 class CuentaAdminCreate(BaseModel):
     usuario_id: int
-    password  : str  # llega como texto plano, se hashea en el servicio
+    password  : str
 
     @field_validator("password")
     @classmethod

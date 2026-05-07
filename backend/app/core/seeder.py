@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Session
+from sqlalchemy import text
 from app.models.models import Rol, Area, Usuario, CuentaAdmin
 from app.core.security import hashear_password
 import os
@@ -44,12 +45,25 @@ SUPERADMIN = {
 SUPERADMIN_PASSWORD = os.getenv("SUPERADMIN_PASSWORD", "admin1234")
 
 
+def reset_sequence(db: Session, tabla: str) -> None:
+    """
+    Resetea la secuencia autoincremental de una tabla al valor
+    máximo actual + 1. Necesario cuando insertamos IDs manualmente.
+    """
+    db.execute(text(
+        f"SELECT setval(pg_get_serial_sequence('{tabla}', 'id'), "
+        f"COALESCE(MAX(id), 0) + 1, false) FROM {tabla}"
+    ))
+    db.commit()
+
+
 def seed_roles(db: Session) -> None:
     for data in ROLES:
         existe = db.query(Rol).filter(Rol.id == data["id"]).first()
         if not existe:
             db.add(Rol(**data))
     db.commit()
+    reset_sequence(db, "roles")
 
 
 def seed_areas(db: Session) -> None:
@@ -58,6 +72,7 @@ def seed_areas(db: Session) -> None:
         if not existe:
             db.add(Area(**data))
     db.commit()
+    reset_sequence(db, "areas")
 
 
 def seed_superadmin(db: Session) -> None:
@@ -66,12 +81,10 @@ def seed_superadmin(db: Session) -> None:
     ).first()
 
     if not existe:
-        # Crea el usuario superadmin
         usuario = Usuario(**SUPERADMIN)
         db.add(usuario)
-        db.flush()  # genera el id sin hacer commit todavía
+        db.flush()
 
-        # Crea su cuenta con password hasheado
         cuenta = CuentaAdmin(
             usuario_id=usuario.id,
             password_hash=hashear_password(SUPERADMIN_PASSWORD)
@@ -81,6 +94,6 @@ def seed_superadmin(db: Session) -> None:
 
 
 def run_all_seeders(db: Session) -> None:
-    seed_roles(db)       # primero roles — usuario depende de ellos
-    seed_areas(db)       # luego áreas — usuario depende de ellas
-    seed_superadmin(db)  # último — depende de roles y áreas
+    seed_roles(db)
+    seed_areas(db)
+    seed_superadmin(db)
