@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import text
-from app.models.models import Rol, Area, Usuario, CuentaAdmin
+from app.models.models import Rol, Area, Usuario, CuentaAdmin, TipoVehiculo, Vehiculo
 from app.core.security import hashear_password
 import os
 
@@ -43,6 +43,32 @@ SUPERADMIN = {
 }
 
 SUPERADMIN_PASSWORD = os.getenv("SUPERADMIN_PASSWORD", "admin1234")
+
+# ============================================================
+# TIPOS DE VEHÍCULO — fijos, sin endpoint POST
+# ============================================================
+
+TIPOS_VEHICULO = [
+    {"id": 1, "nombre": "Sedan"},
+    {"id": 2, "nombre": "SUV"},
+    {"id": 3, "nombre": "Camioneta"},
+    {"id": 4, "nombre": "Van"},
+    {"id": 5, "nombre": "Bus"},
+]
+
+# ============================================================
+# VEHÍCULOS INICIALES
+# ============================================================
+
+VEHICULOS = [
+    {"placa": "ABC-123", "tipo_id": 1, "capacidad_pasajeros": 4,  "marca": "Toyota",   "modelo": "Corolla", "anio": 2020, "color": "Blanco", "soat_vencimiento": "2026-12-31"},
+    {"placa": "DEF-456", "tipo_id": 2, "capacidad_pasajeros": 5,  "marca": "Hyundai",  "modelo": "Tucson",  "anio": 2021, "color": "Negro",  "soat_vencimiento": "2026-11-30"},
+    {"placa": "GHI-789", "tipo_id": 3, "capacidad_pasajeros": 2,  "marca": "Nissan",   "modelo": "NP300",   "anio": 2022, "color": "Azul",   "soat_vencimiento": "2027-01-15"},
+    {"placa": "JKL-012", "tipo_id": 4, "capacidad_pasajeros": 8,  "marca": "Mercedes", "modelo": "Sprinter","anio": 2023, "color": "Blanco", "soat_vencimiento": "2027-03-20"},
+    {"placa": "MNO-345", "tipo_id": 5, "capacidad_pasajeros": 30, "marca": "Scania",   "modelo": "K310",    "anio": 2024, "color": "Rojo",   "soat_vencimiento": "2027-05-10"},
+    {"placa": "PQR-678", "tipo_id": 1, "capacidad_pasajeros": 4,  "marca": "Mazda",    "modelo": "3",       "anio": 2019, "color": "Gris",   "soat_vencimiento": "2026-08-25"},
+    {"placa": "STU-901", "tipo_id": 3, "capacidad_pasajeros": 2,  "marca": "Toyota",   "modelo": "Hilux",   "anio": 2023, "color": "Plata",  "soat_vencimiento": "2027-02-28"},
+]
 
 
 def reset_sequence(db: Session, tabla: str) -> None:
@@ -93,7 +119,27 @@ def seed_superadmin(db: Session) -> None:
         db.commit()
 
 
+def seed_tipos_vehiculo(db: Session) -> None:
+    for data in TIPOS_VEHICULO:
+        existe = db.query(TipoVehiculo).filter(TipoVehiculo.id == data["id"]).first()
+        if not existe:
+            db.add(TipoVehiculo(**data))
+    db.commit()
+    reset_sequence(db, "tipos_vehiculo")
+
+
+def seed_vehiculos(db: Session) -> None:
+    for data in VEHICULOS:
+        existe = db.query(Vehiculo).filter(Vehiculo.placa == data["placa"]).first()
+        if not existe:
+            db.add(Vehiculo(**data))
+    db.commit()
+    reset_sequence(db, "vehiculos")
+
+
 def run_all_seeders(db: Session) -> None:
     seed_roles(db)
     seed_areas(db)
     seed_superadmin(db)
+    seed_tipos_vehiculo(db)
+    seed_vehiculos(db)

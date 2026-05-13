@@ -91,6 +91,9 @@ class TokenResponse(BaseModel):
 class TipoVehiculoCreate(BaseModel):
     nombre: str
 
+class TipoVehiculoUpdate(BaseModel):
+    nombre: str
+
 class TipoVehiculoResponse(BaseModel):
     id    : int
     nombre: str
