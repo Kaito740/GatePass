@@ -2,7 +2,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from app.core.database import SessionLocal
 from app.core.seeder import run_all_seeders
-from app.api.v1 import auth, usuarios, tipos_vehiculo
+from app.api.v1 import auth, usuarios, tipos_vehiculo, vehiculos
 
 
 @asynccontextmanager
@@ -25,6 +25,7 @@ app = FastAPI(
 app.include_router(auth.router,     prefix="/api/v1")
 app.include_router(usuarios.router,      prefix="/api/v1")
 app.include_router(tipos_vehiculo.router, prefix="/api/v1")
+app.include_router(vehiculos.router,       prefix="/api/v1")
 
 
 @app.get("/")

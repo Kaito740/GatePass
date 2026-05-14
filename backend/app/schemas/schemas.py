@@ -113,6 +113,9 @@ class VehiculoCreate(BaseModel):
     soat_vencimiento   : date
 
 class VehiculoUpdate(BaseModel):
+    placa              : Optional[str]  = None
+    tipo_id            : Optional[int]  = None
+    capacidad_pasajeros: Optional[int]  = None
     marca              : Optional[str]  = None
     modelo             : Optional[str]  = None
     anio               : Optional[int]  = None
