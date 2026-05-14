@@ -123,6 +123,52 @@ gatepass/
 
 ---
 
+## Estado de Implementación
+
+### Modelos (SQLAlchemy)
+| Modelo | Tabla | Estado |
+|--------|-------|--------|
+| Rol | `roles` | ✅ Creado + seed fijo |
+| Area | `areas` | ✅ Creado + seed fijo |
+| Usuario | `usuarios` | ✅ Creado |
+| CuentaAdmin | `cuentas_admin` | ✅ Creado |
+| TipoVehiculo | `tipos_vehiculo` | ✅ Creado + seed fijo |
+| Vehiculo | `vehiculos` | ✅ Creado + seed inicial |
+| Conductor | `conductores` | ✅ Creado |
+| AsignacionTransporte | `asignaciones_transporte` | ✅ Creado |
+| TicketSalida | `tickets_salida` | ✅ Creado |
+| BitacoraEvento | `bitacora_eventos` | ✅ Creado |
+
+### Seeders (se ejecutan al iniciar la app)
+| Seeder | Datos insertados |
+|--------|-----------------|
+| `seed_roles` | superadmin, rrhh, jefe_area, conductor, vigilante |
+| `seed_areas` | Administración, RRHH, Logística, Operaciones, Gerencia |
+| `seed_superadmin` | Cuenta admin inicial (desde variables de entorno) |
+| `seed_tipos_vehiculo` | Sedan, SUV, Camioneta, Van, Bus |
+| `seed_vehiculos` | 7 vehículos de ejemplo |
+
+### Endpoints de la API (`/api/v1`)
+| Recurso | GET | POST | PUT | DELETE | Auth |
+|---------|-----|------|-----|--------|------|
+| `/auth/login` | — | ✅ Login | — | — | Público |
+| `/auth/cuenta` | — | ✅ Crear cuenta admin | — | — | superadmin |
+| `/auth/me` | ✅ Perfil actual | — | — | — | Cualquiera |
+| `/usuarios/areas` | ✅ Listar | ✅ Crear | ✅ Editar | ✅ Eliminar | GET: auth, resto: superadmin |
+| `/roles` | ✅ Listar | — | — | — | Cualquiera autenticado |
+| `/tipos-vehiculo` | ✅ Listar | ✅ Crear | ✅ Editar | ✅ Eliminar | GET: auth, resto: superadmin |
+| `/vehiculos` | ✅ Listar | ✅ Crear | ✅ Editar | ✅ Eliminar | GET: auth, resto: superadmin |
+
+### Próximos endpoints (pendientes)
+- Usuario CRUD
+- Conductor CRUD
+- AsignacionTransporte CRUD
+- TicketSalida CRUD + flujo de aprobaciones
+- BitacoraEvento endpoints
+- Reportes con IA (Ollama)
+
+---
+
 ## Levantar el proyecto
 
 Ver [docs/setup.md](docs/setup.md)
