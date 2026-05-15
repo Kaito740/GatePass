@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from app.core.database import get_db
 from app.core.security import verificar_password, crear_token, hashear_password
 from app.core.dependencies import get_current_user, require_rol
+from app.core.roles import Rol
 from app.models.models import Usuario, CuentaAdmin
 from app.schemas.schemas import (
     LoginInput, TokenResponse,
@@ -68,7 +69,7 @@ def login(datos: LoginInput, db: Session = Depends(get_db)):
 def crear_cuenta(
     datos: CuentaAdminCreate,
     db: Session = Depends(get_db),
-    _: Usuario = Depends(require_rol("superadmin"))
+    _: Usuario = Depends(require_rol(Rol.SUPERADMIN))
 ):
     """
     Crea una cuenta de acceso al sistema para un usuario existente.

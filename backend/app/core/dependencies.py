@@ -3,6 +3,7 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
 from app.core.database import get_db
 from app.core.security import verificar_token
+from app.core.roles import Rol
 from app.models.models import Usuario, CuentaAdmin
 
 # Muestra un campo simple "Bearer token" en Swagger
@@ -52,7 +53,7 @@ def get_current_user(
     return usuario
 
 
-def require_rol(*roles_permitidos: str):
+def require_rol(*roles_permitidos: Rol):
     """
     Dependencia que verifica si el usuario tiene el rol necesario.
     """

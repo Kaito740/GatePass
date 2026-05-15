@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from typing import List
 from app.core.database import get_db
 from app.core.dependencies import get_current_user, require_rol
+from app.core.roles import Rol
 from app.models.models import Usuario, Vehiculo, TipoVehiculo
 from app.schemas.schemas import VehiculoCreate, VehiculoUpdate, VehiculoResponse
 
@@ -21,7 +22,7 @@ def listar_vehiculos(
 def crear_vehiculo(
     datos: VehiculoCreate,
     db: Session = Depends(get_db),
-    _: Usuario = Depends(require_rol("superadmin"))
+    _: Usuario = Depends(require_rol(Rol.SUPERADMIN))
 ):
     existe = db.query(Vehiculo).filter(Vehiculo.placa == datos.placa).first()
     if existe:
@@ -49,7 +50,7 @@ def actualizar_vehiculo(
     vehiculo_id: int,
     datos: VehiculoUpdate,
     db: Session = Depends(get_db),
-    _: Usuario = Depends(require_rol("superadmin"))
+    _: Usuario = Depends(require_rol(Rol.SUPERADMIN))
 ):
     vehiculo = db.query(Vehiculo).filter(Vehiculo.id == vehiculo_id).first()
     if not vehiculo:
@@ -105,7 +106,7 @@ def actualizar_vehiculo(
 def eliminar_vehiculo(
     vehiculo_id: int,
     db: Session = Depends(get_db),
-    _: Usuario = Depends(require_rol("superadmin"))
+    _: Usuario = Depends(require_rol(Rol.SUPERADMIN))
 ):
     vehiculo = db.query(Vehiculo).filter(Vehiculo.id == vehiculo_id).first()
     if not vehiculo:

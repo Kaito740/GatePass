@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from typing import List
 from app.core.database import get_db
 from app.core.dependencies import get_current_user, require_rol
+from app.core.roles import Rol
 from app.models.models import Usuario, TipoVehiculo, Vehiculo
 from app.schemas.schemas import TipoVehiculoCreate, TipoVehiculoUpdate, TipoVehiculoResponse
 
@@ -21,7 +22,7 @@ def listar_tipos_vehiculo(
 def crear_tipo_vehiculo(
     datos: TipoVehiculoCreate,
     db: Session = Depends(get_db),
-    _: Usuario = Depends(require_rol("superadmin"))
+    _: Usuario = Depends(require_rol(Rol.SUPERADMIN))
 ):
     existe = db.query(TipoVehiculo).filter(TipoVehiculo.nombre == datos.nombre).first()
     if existe:
@@ -41,7 +42,7 @@ def actualizar_tipo_vehiculo(
     tipo_id: int,
     datos: TipoVehiculoUpdate,
     db: Session = Depends(get_db),
-    _: Usuario = Depends(require_rol("superadmin"))
+    _: Usuario = Depends(require_rol(Rol.SUPERADMIN))
 ):
     tipo = db.query(TipoVehiculo).filter(TipoVehiculo.id == tipo_id).first()
     if not tipo:
@@ -68,7 +69,7 @@ def actualizar_tipo_vehiculo(
 def eliminar_tipo_vehiculo(
     tipo_id: int,
     db: Session = Depends(get_db),
-    _: Usuario = Depends(require_rol("superadmin"))
+    _: Usuario = Depends(require_rol(Rol.SUPERADMIN))
 ):
     tipo = db.query(TipoVehiculo).filter(TipoVehiculo.id == tipo_id).first()
     if not tipo:
